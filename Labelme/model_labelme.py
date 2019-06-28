@@ -2,8 +2,8 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from common_cifar import Config
-from data_cifar import expert_tmatrix,train_loader
+from common_labelme import Config
+from data_labelme import expert_tmatrix,train_loader
 import numpy as np
 import vgg
 

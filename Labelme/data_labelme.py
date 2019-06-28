@@ -8,7 +8,7 @@ from test import get_data
 from tqdm import tqdm
 from PIL import Image
 import os
-from common_cifar import Config
+from common_labelme import Config
 from torchvision import datasets
 
 
@@ -219,6 +219,7 @@ class Im_EP_labelme_em(torch.utils.data.Dataset):
 def Initial_mats():
 
     if not Config.missing :
+        # Never reach here
         sum_majority_prob = torch.zeros((Config.num_classes))
         confusion_matrix = torch.zeros((Config.expert_num, Config.num_classes, Config.num_classes))
         expert_tmatrix = torch.zeros((Config.expert_num, Config.num_classes, Config.num_classes))
@@ -285,7 +286,7 @@ train_loader = torch.utils.data.DataLoader(dataset = train_dataset, batch_size =
 #test_dataset = Im_EP_labelme(as_expertise=Config.as_expertise, root_path=Config.data_root, missing_label=Config.missing_label, train=False)
 #test_loader = torch.utils.data.DataLoader(dataset = test_dataset, batch_size = Config.batch_size, shuffle = False)
 
-#expert_tmatrix = Initial_mats()
+expert_tmatrix = Initial_mats()
 
 #print(expert_tmatrix)
 

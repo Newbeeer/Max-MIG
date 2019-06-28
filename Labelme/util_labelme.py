@@ -3,7 +3,7 @@ util - other functions
 """
 import torch
 import numpy as np
-from common_cifar import Config
+from common_labelme import Config
 from torch.autograd import Variable
 
 I = torch.FloatTensor(np.eye(Config.batch_size),)

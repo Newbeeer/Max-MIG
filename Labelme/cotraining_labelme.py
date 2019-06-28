@@ -3,9 +3,9 @@ cotraining - main file for training and testing
 """
 
 import torch.nn.functional as F
-from model_cifar import *
-from data_cifar import *
-from util_cifar import *
+from model_labelme import *
+from data_labelme import *
+from util_labelme import *
 from torch.autograd import Variable
 from sklearn.metrics import  roc_auc_score
 from tensorboardX import SummaryWriter
