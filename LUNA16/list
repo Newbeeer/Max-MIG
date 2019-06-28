@@ -1,0 +1,5 @@
+common - configurations
+data - to generate data from crowds
+model - models for different methods
+main - main file for training and testing
+util - other functions
