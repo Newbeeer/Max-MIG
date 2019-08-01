@@ -98,6 +98,10 @@ device_num : GPU number
 
 
 
+The Labelme dataset can be downloaded at http://fprodrigues.com//deep_LabelMe.tar.gz . Please place `prepared` document in the same folder with your code. :smile:
+
+
+
 To cite our paper:
 
 ```shell
