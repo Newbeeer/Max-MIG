@@ -9,8 +9,7 @@ parser = argparse.ArgumentParser(description='CoTraining')
 
 parser.add_argument('--device', type=int, metavar='N',
                     help='case')
-parser.add_argument('--c1', default="", metavar='DIR', help='path to check left')
-parser.add_argument('--c2', default="", metavar='DIR', help='path to check right')
+
 args = parser.parse_args()
 class Config:
     data_root = './dogdata'

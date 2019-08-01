@@ -1,5 +1,5 @@
 import numpy as np
-from common_cifar import Config
+from common_labelme import Config
 
 N_CLASSES = Config.num_classes
 def load_data(filename):

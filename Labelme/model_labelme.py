@@ -8,8 +8,7 @@ import numpy as np
 import vgg
 
 torch.cuda.set_device(Config.device_id)
-from util_cifar import  initial_priori
-#p_pure = initial_priori(train_loader)
+
 
 p_pure = torch.FloatTensor([0.125,0.125,0.125,0.125,0.125,0.125,0.125,0.125])
 p = p_pure
