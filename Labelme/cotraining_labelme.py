@@ -42,7 +42,7 @@ def train(epoch, priori_pure, priori) :
 
     p_pure = priori_pure
     p = priori
-    print("Priori from Pure Co-training:", p_pure)
+    #print("Priori from Pure Co-training:", p_pure)
 
     for batch_idx , (left_data, right_data) in enumerate(train_loader):
         if left_data.size()[0] != Config.batch_size :
@@ -133,6 +133,7 @@ def train(epoch, priori_pure, priori) :
 loss_f = torch.nn.KLDivLoss(size_average=False)
 
 def train_agg():
+    #Agg Alg
     train_loader_em = torch.utils.data.DataLoader(dataset=train_dataset_em, batch_size=Config.batch_size, shuffle=True)
 
     # training
@@ -150,7 +151,7 @@ def train_agg():
         loss.backward()
         left_optimizer_em.step()
         em_loss += loss
-    print('Agg loss: {:.4f}'.format(em_loss))
+    #print('Agg loss: {:.4f}'.format(em_loss))
 
     # E-step
     right_label = []
@@ -246,10 +247,8 @@ def train_mbem():
     train_dataset_mbem.label_update(right_label)
 
 
-
-
 def test(epoch) :
-    print('current test epoch = %d' % epoch)
+    print('current test epoch :{}'.format(epoch))
 
 
     net_mw.eval()
@@ -350,8 +349,8 @@ if __name__ == '__main__':
     for epoch in range(Config.epoch_num):
 
         p_pure, p = train(epoch, p_pure, p)
-        #train_agg()
-        #train_mbem()
+        train_agg()
+        train_mbem()
         print("--------")
         co,mv,dn,mw, agg,mbem= test(epoch)
         best_cotraining = max(best_cotraining,co)
@@ -360,9 +359,9 @@ if __name__ == '__main__':
         best_mw = max(best_mw,mw)
         best_agg = max(best_agg,agg)
 
-        print("Pure Cotraining ACC:", best_cotraining)
-        print("Majority Voting ACC:", best_majority)
-        print("DN Cotraining ACC:", best_dn)
-        print("MW Cotraining ACC:", best_mw)
-        print("AGG Cotraining ACC:", best_agg)
-        print("MBEM Cotraining ACC:", mbem)
+        print("Max-MIG Acc:", best_cotraining)
+        print("Majority Voting Acc:", best_majority)
+        print("DN Cotraining Acc:", best_dn)
+        print("MW Cotraining Acc:", best_mw)
+        print("AGG Cotraining Acc:", best_agg)
+        print("MBEM Cotraining Acc:", mbem)

@@ -14,7 +14,7 @@ from torchvision import datasets
 
 class Im_EP_labelme(torch.utils.data.Dataset):
     """
-    Im_EP - to generate a dataset with images, experts' predictions and labels for learning from crowds settings
+    Im_EP_labelme - to generate a dataset with images, experts' predictions and labels for learning from crowds settings
     """
     def __init__(self, as_expertise, root_path, missing_label, train):
         self.as_expertise = as_expertise
@@ -32,10 +32,12 @@ class Im_EP_labelme(torch.utils.data.Dataset):
 
     def __getitem__(self, index):
         if self.train:
-            left, right, label = self.left_data[index], self.right_data[index],self.label[index]
-            return left, right,label
+            #right are the crowd-sourced labels
+            left, right = self.left_data[index], self.right_data[index]
+            return left, right
         else:
-            left, right, label = self.left_data[index], self.right_data[index],self.label[index]
+            #right are the test labels
+            left, right = self.left_data[index], self.right_data[index]
             return left, right
 
     def __len__(self):
@@ -66,7 +68,7 @@ class Im_EP_labelme(torch.utils.data.Dataset):
 
 class Im_EP_labelme_em(torch.utils.data.Dataset):
     """
-    Im_EP - to generate a dataset with images, experts' predictions and labels for learning from crowds settings
+    Im_EP_labelme_em - to generate a dataset with images, experts' predictions and labels for learning from crowds settings (EM alg based methods)
     """
     def __init__(self, as_expertise, root_path, missing_label, train):
         self.as_expertise = as_expertise
@@ -79,11 +81,12 @@ class Im_EP_labelme_em(torch.utils.data.Dataset):
 
         if self.train:
 
-            self.left_data, self.right_data = self.generate_data()
+            self.left_data, self.right_data, self.label = self.generate_data()
+            self.label_initial()
         else:
 
             self.left_data, self.right_data = self.generate_data()
-        self.label_initial()
+
     def __getitem__(self, index):
         if self.train:
             left, right, label = self.left_data[index], self.right_data[index], self.label[index]
@@ -100,11 +103,12 @@ class Im_EP_labelme_em(torch.utils.data.Dataset):
     def generate_data(self):
 
         if self.train:
-            left_data,right_data = get_data(True)
+            left_data,right_data,label = get_data(True)
+            return left_data,right_data,label
         else:
             left_data, right_data = get_data(False)
 
-        return left_data, right_data
+            return left_data, right_data
 
     def label_initial(self):
 
@@ -118,60 +122,33 @@ class Im_EP_labelme_em(torch.utils.data.Dataset):
 
 def Initial_mats():
 
-    if not Config.missing :
-        # Never reach here
-        sum_majority_prob = torch.zeros((Config.num_classes))
-        confusion_matrix = torch.zeros((Config.expert_num, Config.num_classes, Config.num_classes))
-        expert_tmatrix = torch.zeros((Config.expert_num, Config.num_classes, Config.num_classes))
+    #MLE initialization for expert confusion matrix. See apendix B.2 for the detail.
 
-        for i, (img, ep, label) in enumerate(tqdm(train_loader)):
-            linear_sum = torch.sum(ep, dim=1)
+    sum_majority_prob = torch.zeros((Config.expert_num, Config.num_classes))
 
-            prob = linear_sum / Config.expert_num
-            sum_majority_prob += torch.sum(prob, dim=0).float()
+    expert_tmatrix = torch.zeros((Config.expert_num, Config.num_classes, Config.num_classes))
 
-            for j in range(ep.size()[0]):
-                _, expert_class = torch.max(ep[j], 1)
-                linear_sum_2 = torch.sum(ep[j], dim=0)
-                prob_2 = linear_sum_2 / Config.expert_num
-                for R in range(Config.expert_num):
-                    expert_tmatrix[R, :, expert_class[R]] += prob_2.float()
-                    confusion_matrix[R, label[j], expert_class[R]] += 1
+    for i, (img, ep) in enumerate(tqdm(train_loader)):
 
-        for R in range(Config.expert_num):
-            linear_sum = torch.sum(confusion_matrix[R, :, :], dim=1)
-            confusion_matrix[R, :, :] /= linear_sum.unsqueeze(1)
+        for j in range(ep.size()[0]):
+            linear_sum_2 = torch.sum(ep[j], dim=0)
+            prob_2 = linear_sum_2 / torch.sum(linear_sum_2)
 
-        expert_tmatrix = expert_tmatrix / sum_majority_prob.unsqueeze(1)
-        return confusion_matrix, expert_tmatrix
-    else:
-        sum_majority_prob = torch.zeros((Config.expert_num,Config.num_classes))
+            # prob_2 : all experts' majority voting
 
-        expert_tmatrix = torch.zeros((Config.expert_num, Config.num_classes, Config.num_classes))
-        
-        for i, (img, ep) in enumerate(tqdm(train_loader)):
+            for R in range(Config.expert_num):
+                # If missing ....
+                if max(ep[j, R]) == 0:
+                    continue
+                _, expert_class = torch.max(ep[j, R], 0)
+                expert_tmatrix[R, :, expert_class] += prob_2.float()
+                sum_majority_prob[R] += prob_2.float()
 
-            for j in range(ep.size()[0]):
-                linear_sum_2 = torch.sum(ep[j], dim=0)
-                prob_2 = linear_sum_2 / torch.sum(linear_sum_2)
+    sum_majority_prob = sum_majority_prob + 1 * (sum_majority_prob == 0).float()
+    for R in range(Config.expert_num):
+        expert_tmatrix[R] = expert_tmatrix[R] / sum_majority_prob[R].unsqueeze(1)
 
-                # prob_2 : all experts' majority voting
-
-                for R in range(Config.expert_num):
-                    # If missing ....
-                    if max(ep[j,R]) == 0:
-
-                        continue
-                    _,expert_class = torch.max(ep[j,R],0)
-                    expert_tmatrix[R, :, expert_class] += prob_2.float()
-                    sum_majority_prob[R] += prob_2.float()
-
-        sum_majority_prob = sum_majority_prob + 1 * (sum_majority_prob == 0).float()
-        for R in range(Config.expert_num):
-
-            expert_tmatrix[R] = expert_tmatrix[R] / sum_majority_prob[R].unsqueeze(1)
-
-        return expert_tmatrix
+    return expert_tmatrix
 
 
 
@@ -188,6 +165,5 @@ test_loader = torch.utils.data.DataLoader(dataset = test_dataset, batch_size = C
 
 expert_tmatrix = Initial_mats()
 
-print("Initial expert matrix:",expert_tmatrix)
 
 

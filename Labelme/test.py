@@ -15,17 +15,22 @@ def one_hot(target, n_classes):
     return one_hot_targets
 
 def get_data(train):
+    '''
+    Load the dataset
+    :param train: training or not
+    :return:
+    '''
     if train:
         path = './prepared/'
 
         data_train_vgg16 = load_data(path + "data_train_vgg16.npy").transpose(0, 3, 1, 2)
-        print(data_train_vgg16.shape)
+        #print("Training data shape:",data_train_vgg16.shape)
 
         #print("\nLoading AMT data...")
         answers = load_data(path + "answers.npy")
         label_train = load_data(path + "labels_train.npy")
-        print(answers.shape)
-        print(label_train.shape)
+        #print("Crowdsourced label shape:",answers.shape)
+        #print("label shape:",label_train.shape)
         N_ANNOT = answers.shape[1]
 
         #print("N_ANNOT:", N_ANNOT)
@@ -46,7 +51,7 @@ def get_data(train):
         #print(answers_bin_missings.shape)
 
         # print(answers_bin_missings[0])
-        return data_train_vgg16, answers_bin_missings,label_train
+        return data_train_vgg16, answers_bin_missings, label_train
     else:
         path = './prepared/'
 
