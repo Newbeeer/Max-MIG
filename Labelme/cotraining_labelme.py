@@ -332,12 +332,6 @@ def test(epoch) :
     agg_acc = float(total_corrects_em) / float(total_sample)
     mbem_acc = float(total_corrects_mbem) / float(total_sample)
 
-
-    #print("Pure Cotraining ACC:",float(total_corrects_pure)/float(total_sample))
-    #print("Majority Voting ACC:", float(total_corrects_majority) / float(total_sample))
-    #print("DN Cotraining ACC:", float(total_corrects_dn) / float(total_sample))
-    #print("MW Cotraining ACC:", float(total_corrects_mw) / float(total_sample))
-
     return cotrain_acc,majority_acc,dn_acc,mw_acc,agg_acc,mbem_acc
 
 
