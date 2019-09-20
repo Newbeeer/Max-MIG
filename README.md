@@ -10,7 +10,7 @@ arxiv : https://arxiv.org/abs/1905.13436
 
 
 
-<img src="https://github.com/Newbeeer/Max0MIG/blob/master/graph.png" width="650px" />
+<img src="https://github.com/Newbeeer/Max-MIG/blob/master/graph.png" width="650px" />
 
 ## Synthesized Crowd-sourcing dataset
 
