@@ -90,7 +90,7 @@ class left_neural_net_dn(nn.Module):
             self.add_module(m_name,nn.Linear(512, Config.num_classes))
         self.vgg = VGG('VGG16')
         self.features = self.vgg.features
-        self.classifier = self.vgg.classifier
+        
     def forward(self, x):
         x = self.features(x)
         x = x.view(-1, 512)
