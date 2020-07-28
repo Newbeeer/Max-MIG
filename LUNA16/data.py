@@ -21,7 +21,7 @@ class Image_(torch.utils.data.Dataset):
         if train :
             flist = os.path.join(root, "train_file.csv")
         else :
-            flist = os.path.join(root, "test_file.csv")
+            flist = os.path.join(root, "val_file.csv")
         self.imlist = self.flist_reader(flist)
         self.transform = img_transform
         self.train = train
