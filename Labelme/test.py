@@ -24,16 +24,10 @@ def get_data(train):
         path = './prepared/'
 
         data_train_vgg16 = load_data(path + "data_train_vgg16.npy").transpose(0, 3, 1, 2)
-        #print("Training data shape:",data_train_vgg16.shape)
 
-        #print("\nLoading AMT data...")
         answers = load_data(path + "answers.npy")
         label_train = load_data(path + "labels_train.npy")
-        #print("Crowdsourced label shape:",answers.shape)
-        #print("label shape:",label_train.shape)
         N_ANNOT = answers.shape[1]
-
-        #print("N_ANNOT:", N_ANNOT)
 
         answers_bin_missings = []
 
@@ -48,9 +42,7 @@ def get_data(train):
             answers_bin_missings.append(row)
 
         answers_bin_missings = np.array(answers_bin_missings)
-        #print(answers_bin_missings.shape)
 
-        # print(answers_bin_missings[0])
         return data_train_vgg16, answers_bin_missings, label_train
     else:
         path = './prepared/'
@@ -62,6 +54,3 @@ def get_data(train):
         return data_test_vgg16, labels_test
 
 
-
-
-#print(label[0])

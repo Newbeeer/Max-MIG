@@ -8,6 +8,8 @@ paper link: https://openreview.net/forum?id=BJg9DoR9t7
 
 arxiv : https://arxiv.org/abs/1905.13436
 
+[[Slide](https://www.dropbox.com/scl/fi/urg6ko7dfulbmz9rc5n9c/max_mig.pptx?dl=0&rlkey=55ktvcvnvvvgw3pv7oezr7r57)]
+
 
 
 <img src="https://github.com/Newbeeer/Max-MIG/blob/master/graph.png" width="650px" />

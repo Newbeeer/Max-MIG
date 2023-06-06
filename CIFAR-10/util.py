@@ -18,7 +18,7 @@ def kl_loss_function(output1, output2, p):
     :return: -MIG^f where f-divergence is KL divergence
     """
     new_output = output1 / p
-    m =  (new_output @ output2.transpose(1,0))
+    m = (new_output @ output2.transpose(1,0))
     noise = torch.rand(1)*0.0001
     m1 = torch.log(m*I+ I*noise + E - I)
     m2 = m*(E-I)
